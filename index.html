@@ -1,0 +1,136 @@
+<html lang="en">
+
+<title>My TextEditor</title>
+<meta charset="utf-8"/>
+
+<link rel=stylesheet href="lib/codemirror.css">
+<script src="lib/codemirror.js"></script>
+<link rel="stylesheet" href="lib/monokai.css">
+
+<script src="lib/javascript.js"></script>
+<script src="lib/active-line.js"></script>
+<script src="lib/matchbrackets.js"></script>
+
+<script src="lib/xml-fold.js"></script>
+<script src="lib/matchtags.js"></script>
+<script src="lib/xml.js"></script>
+
+
+ 
+    <script src="lib/css.js"></script>
+ 
+    <script src="lib/htmlmixed.js"></script>
+
+
+<style type=text/css>
+      .CodeMirror {
+        float: left;
+        width: 50%;
+        border: 1px solid #A58080;
+      }
+      iframe {
+        width: 49.5%;
+        float: left;
+        height: 690px;
+        border: 1px solid black;
+        border-left: 0px;
+        background: #d7d4f0;
+      }
+  .CodeMirror {
+  /* Set height, width, borders, and global font properties here */
+  font-family: monospace;
+  height: 690px;
+  color: black;
+  direction: ltr;
+}
+.CodeMirror {border: 1px solid black; font-size:18px}
+
+ .breakpoints {width: .8em;}
+
+ body {
+  margin: 5px 0px 0px 5px;
+  background: #FFFFFF;
+ }
+    </style>
+
+<article>
+
+    <textarea id=code name=code>
+<!doctype html>
+<html>
+  <head>
+    <meta charset=utf-8>
+    <title>HTML5 canvas demo</title>
+    <style type=text/css >p {font-family: monospace;}</style>
+  </head>
+  <body style="">
+    <p>Canvas pane goes here:</p>
+    <canvas id=pane width=300 height=200></canvas>
+    <script>
+      var canvas = document.getElementById('pane');
+      var context = canvas.getContext('2d');
+
+      context.fillStyle = 'rgb(250,0,0)';
+      context.fillRect(10, 10, 55, 50);
+
+      context.fillStyle = 'rgba(0, 0, 250, 0.5)';
+      context.fillRect(30, 30, 55, 50);
+    </script>
+  </body>
+</html></textarea>
+    <iframe id=preview></iframe>
+    <script>
+ 
+      var delay;
+      // Initialize CodeMirror editor with a nice html5 canvas demo.
+      var editor = CodeMirror.fromTextArea(document.getElementById('code'), {
+   
+        lineNumbers: true,
+        styleActiveLine: true,
+        matchBrackets: true,
+        styleSelectedText: true,
+        theme: "monokai",
+        value: "<html>\n  " + document.documentElement.innerHTML + "\n</html>",
+    mode: "text/html",
+    matchTags: {bothTags: true},
+        
+        
+      gutters: ["CodeMirror-linenumbers", "breakpoints"]
+});
+
+
+// gutterClick Dot mark
+editor.on("gutterClick", function(cm, n) {
+  var info = cm.lineInfo(n);
+  cm.setGutterMarker(n, "breakpoints", info.gutterMarkers ? null : makeMarker());
+});
+
+function makeMarker() {
+  var marker = document.createElement("div");
+  marker.style.color = "#0f0";
+  marker.innerHTML = "●";
+  return marker;
+}
+
+
+console.log("dsdsddsdsd")
+// live updatePreview
+      editor.on("change", function() {
+        clearTimeout(delay);
+        delay = setTimeout(updatePreview, 300);
+      });
+      
+      function updatePreview() {
+        var previewFrame = document.getElementById('preview');
+        var preview =  previewFrame.contentDocument ||  previewFrame.contentWindow.document;
+        preview.open();
+        preview.write(editor.getValue());
+        preview.close();
+      }
+      setTimeout(updatePreview, 300);
+
+
+
+    </script>
+
+  </article>
